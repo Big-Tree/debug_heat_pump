@@ -2,10 +2,10 @@
     "config": {
         "step": {
             "user": {
-                "description": "If you need help with the configuration have a look here: https://github.com/ludeeus/integration_blueprint",
+                "description": "",
                 "data": {
-                    "username": "Username",
-                    "password": "Password"
+                    "debug_heat_pump_mode": "What heating/cooling modes does the heat pump support",
+                    "Temperature Unit": "Temperature unit the heat pump uses on the backend"
                 }
             }
         },

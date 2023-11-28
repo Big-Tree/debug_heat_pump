@@ -5,4 +5,8 @@ default_config:
 logger:
   default: info
   logs:
-    custom_components.integration_blueprint: debug
+    custom_components.debug_heat_pump: debug
+
+http:
+  #server_port: 8010
+  server_port: 8011
