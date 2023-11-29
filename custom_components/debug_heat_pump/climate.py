@@ -1,4 +1,4 @@
-""""""
+"""debug_heat_pump climate entity."""
 from __future__ import annotations
 
 from homeassistant.components.climate import (
@@ -9,10 +9,13 @@ from homeassistant.components.climate import (
 )
 from homeassistant.const import TEMP_CELSIUS, TEMP_FAHRENHEIT
 
-from .const import DOMAIN
 from . import const
 from .coordinator import DebugHeatPumpCoordinator
 from .entity import DebugHeatPumpEntity
+
+import logging
+#logger = logging.getLogger().setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 ENTITY_DESCRIPTIONS = (
     ClimateEntityDescription(
@@ -60,26 +63,32 @@ class DebugHeatPumpClimate(DebugHeatPumpEntity, ClimateEntity):
                 raise ValueError(f'Heat_cool mode not caught: {self.coordinator.config_entry.data[const.MODE]}')
 
     def force_frontend_update(self):
+        """Update frontend.
+
+        If certain properites of the heat pump are changed, home-assistant doesn't to
+        automatically update the front end.
+        """
         self.coordinator.async_set_updated_data('')
 
     async def async_set_hvac_mode(self, hvac_mode):
-        print('----------hvac_mode set----------')
-        print(hvac_mode)
+        """Such as heat, cool, both..."""
+        logger.debug(f'hvac_mode set to:\n  {hvac_mode}')
         self._hvac_mode = hvac_mode
         self.force_frontend_update()
         return
 
     async def async_set_temperature(self, **kwargs):
+        """Utilised when the heat pump is in either heat or cooling only mode."""
         if self.supported_features & ClimateEntityFeature.TARGET_TEMPERATURE_RANGE == ClimateEntityFeature.TARGET_TEMPERATURE_RANGE:
             # kwargs has target_temp_low and target_temp_high args
             self._target_temperature_high = kwargs['target_temp_high']
             self._target_temperature_low = kwargs['target_temp_low']
-            print(f'Temperature set to: \n  high: {self._target_temperature_high}\n  low: {self._target_temperature_low}')
+            logger.debug(f'Temperature set to: \n  high: {self._target_temperature_high}\n  low: {self._target_temperature_low}')
 
         else:
             # kwargs has temperature arg
             self._target_temperature = kwargs['temperature']
-            print(f'Temperature set to:\n  {self._target_temperature}')
+            logger.debug(f'Temperature set to:\n  {self._target_temperature}')
         self.force_frontend_update()
 
     @property
@@ -99,6 +108,7 @@ class DebugHeatPumpClimate(DebugHeatPumpEntity, ClimateEntity):
 
     @property
     def hvac_modes(self) -> HVACMode:
+        """Returns available modes."""
         match self.coordinator.config_entry.data[const.MODE]:
             case const.MODE_HEAT:
                 return [
@@ -132,17 +142,23 @@ class DebugHeatPumpClimate(DebugHeatPumpEntity, ClimateEntity):
 
     @property
     def hvac_mode(self) -> HVACMode:
-        """Return current operation ie. OFF, HEAT, COOL, HEAT_COOL, AUTO, DRY, FAN_ONLY.
+        """Return current operation.
+
+        ie. OFF, HEAT, COOL, HEAT_COOL, AUTO, DRY, FAN_ONLY.
         HEAT_COOL: The device is set to heat/cool to a target temperature range.
-        AUTO: The device is set to a schedule, learned behavior, AI."""
+        AUTO: The device is set to a schedule, learned behavior, AI.
+        """
 
         return self._hvac_mode
 
     @property
     def temperature_unit(self) -> str:
-        # Our backend will always work in celsius so this should always be set to celsius.
-        # The front end of homeassistant deals with unit conversion, it just needs to know which
-        # units we are working with
+        """Temperature unit that the backend works in.
+
+        Our backend will always work in celsius so this should always be set to celsius.
+        The front end of homeassistant deals with unit conversion, it just needs to know which
+        units we are working with.
+        """
         conversion = {
             const.TEMP_CELSIUS: TEMP_CELSIUS,
             const.TEMP_FAHRENHEIT: TEMP_FAHRENHEIT
@@ -151,25 +167,30 @@ class DebugHeatPumpClimate(DebugHeatPumpEntity, ClimateEntity):
 
     @property
     def target_temperature(self) -> float:
-        print(f'target_temperature:\n  {self._target_temperature}')
+        """Target temperature when operating in single cooling or heating mode."""
+        logger.debug(f'target_temperature:\n  {self._target_temperature}')
         return self._target_temperature
 
     @property
     def target_temperature_high(self) -> float:
-        print(f'target_temperature_high:\n  {self._target_temperature_high}')
+        """Maximum desirable temperature when operating in dual cooling and heating mode."""
+        logger.debug(f'target_temperature_high:\n  {self._target_temperature_high}')
         return self._target_temperature_high
 
     @property
     def target_temperature_low(self) -> float:
-        print(f'target_temperature_low:\n  {self._target_temperature_low}')
+        """Minimum desirable temperature when operating in dual cooling and heating mode."""
+        logger.debug(f'target_temperature_low:\n  {self._target_temperature_low}')
         return self._target_temperature_low
 
     @property
     def current_temperature(self) -> float:
+        """House temperature measured by the heat pump."""
         return 15
 
     @property
     def is_aux_heat(self) -> int:
+        """I think this returns whether the heat pump is currently using resistive heating."""
         return None
 
     #@property

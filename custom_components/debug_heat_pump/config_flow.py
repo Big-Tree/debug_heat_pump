@@ -3,18 +3,10 @@ from __future__ import annotations
 
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.helpers.selector import selector
-from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from . import const
 
-from .api import (
-    DebugHeatPumpApi,
-    DebugHeatPumpApiAuthenticationError,
-    DebugHeatPumpApiCommunicationError,
-    DebugHeatPumpApiError,
-)
-from .const import DOMAIN, LOGGER
+from .const import DOMAIN
 
 
 class DebugHeatPumpFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -43,7 +35,6 @@ class DebugHeatPumpFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 "options": [const.TEMP_CELSIUS, const.TEMP_FAHRENHEIT],
             },
         })
-        
 
         return self.async_show_form(
             step_id="user",

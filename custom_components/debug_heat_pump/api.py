@@ -28,9 +28,8 @@ class DebugHeatPumpApi:
     """Sample API Client."""
 
     def __init__(self, session) -> None:
+        """init."""
         self._session = session
-        
-        """Sample API Client."""
 
     async def async_get_data(self) -> any:
         """Get data from the API."""

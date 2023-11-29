@@ -1,5 +1,4 @@
-"""Custom integration to integrate debug_heat_pump with Home Assistant.
-"""
+"""Custom integration to integrate debug_heat_pump with Home Assistant."""
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry

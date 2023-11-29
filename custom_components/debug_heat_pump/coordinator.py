@@ -5,17 +5,9 @@ from datetime import timedelta
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.update_coordinator import (
-    DataUpdateCoordinator,
-    UpdateFailed,
-)
-from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
-from .api import (
-    DebugHeatPumpApi,
-    DebugHeatPumpApiAuthenticationError,
-    DebugHeatPumpApiError,
-)
+from .api import DebugHeatPumpApi
 from .const import DOMAIN, LOGGER
 
 
