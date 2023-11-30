@@ -62,19 +62,11 @@ class DebugHeatPumpClimate(DebugHeatPumpEntity, ClimateEntity):
             case _:
                 raise ValueError(f'Heat_cool mode not caught: {self.coordinator.config_entry.data[const.MODE]}')
 
-    def force_frontend_update(self):
-        """Update frontend.
-
-        If certain properites of the heat pump are changed, home-assistant doesn't to
-        automatically update the front end.
-        """
-        self.coordinator.async_set_updated_data('')
-
     async def async_set_hvac_mode(self, hvac_mode):
         """Such as heat, cool, both..."""
         logger.debug(f'hvac_mode set to:\n  {hvac_mode}')
         self._hvac_mode = hvac_mode
-        self.force_frontend_update()
+        await self.coordinator.async_request_refresh()
         return
 
     async def async_set_temperature(self, **kwargs):
@@ -89,7 +81,7 @@ class DebugHeatPumpClimate(DebugHeatPumpEntity, ClimateEntity):
             # kwargs has temperature arg
             self._target_temperature = kwargs['temperature']
             logger.debug(f'Temperature set to:\n  {self._target_temperature}')
-        self.force_frontend_update()
+        await self.coordinator.async_request_refresh()
 
     @property
     def supported_features(self) -> ClimateEntityFeature:
