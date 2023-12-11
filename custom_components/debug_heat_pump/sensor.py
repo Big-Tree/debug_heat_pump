@@ -34,8 +34,19 @@ async def async_setup_entry(hass, entry, async_add_devices):
             native_unit_of_measurement='W',
             device_class=SensorDeviceClass.POWER,
             suggested_display_precision=1,
-        ),]
-    )
+        ),
+        OptisparkSensor(
+            coordinator=coordinator,
+            entity_description=SensorEntityDescription(
+                key="buggy_power_usage",
+                name="Buggy Power Usage",
+                icon="mdi:lightning-bolt"),
+            native_value=999,
+            native_unit_of_measurement='w',  # Lowercase w
+            device_class=SensorDeviceClass.POWER,
+            suggested_display_precision=1,
+        ),
+    ])
 
 
 class OptisparkSensor(DebugHeatPumpEntity, SensorEntity):
