@@ -12,6 +12,7 @@ from .coordinator import DebugHeatPumpCoordinator
 
 PLATFORMS: list[Platform] = [
     Platform.CLIMATE,
+    Platform.SENSOR,
 ]
 
 
