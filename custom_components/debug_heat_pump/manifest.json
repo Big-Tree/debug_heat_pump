@@ -8,5 +8,5 @@
   "documentation": "https://github.com/Big-Tree/debug_heat_pump",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/Big-Tree/debug_heat_pump/issues",
-  "version": "0.0.1"
+  "version": "0.0.2"
 }

@@ -178,7 +178,7 @@ class DebugHeatPumpClimate(DebugHeatPumpEntity, ClimateEntity):
     @property
     def current_temperature(self) -> float:
         """House temperature measured by the heat pump."""
-        return 15
+        return 16
 
     @property
     def is_aux_heat(self) -> int:
