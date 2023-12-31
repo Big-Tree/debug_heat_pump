@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 import pandas as pd
+import os
 
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -28,9 +28,19 @@ class DebugHeatPumpCoordinator(DataUpdateCoordinator):
             update_interval=timedelta(seconds=60),
         )
 
-        csv_file_path = self.hass.config.path().split('/')[:-1]
-        csv_file_path.extend(['custom_components', 'debug_heat_pump', 'data', 'Property_ID=EOH3204_cropped.csv'])
-        csv_file_path = '/'.join(csv_file_path)
+        csv_file_path = self.hass.config.path()
+        csv_file_path = os.path.join(
+            csv_file_path,
+            'custom_components/debug_heat_pump/data/Property_ID=EOH3204_cropped.csv')
+
+        # If we are developing the integration the file path will be different.
+        developing_integration = False
+        if developing_integration:
+            csv_file_path = self.hass.config.path().split('/')[:-1]
+            csv_file_path.extend(['custom_components', 'debug_heat_pump', 'data', 'Property_ID=EOH3204_cropped.csv'])
+            csv_file_path = '/'.join(csv_file_path)
+        #csv_file_path.extend(['custom_components', 'debug_heat_pump', 'data', 'Property_ID=EOH3204_cropped.csv'])
+        #csv_file_path = '/'.join(csv_file_path)
         df = pd.read_csv(csv_file_path)
         df = df[15249:-22630]  # 2022/01/01 00:00:00 - 2022/08/24 23:58:00
         self._external_air_temperature = df['External_Air_Temperature'].to_numpy()
