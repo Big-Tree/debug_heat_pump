@@ -13,35 +13,32 @@ async def async_setup_entry(hass, entry, async_add_devices):
     """Set up the sensor platform."""
     coordinator = hass.data[const.DOMAIN][entry.entry_id]
     async_add_devices([
-        OptisparkSensor(
+        Optispark_external_air_temperature_sensor(
             coordinator=coordinator,
             entity_description=SensorEntityDescription(
                 key="external_temperature",
                 name="External Temperature",
                 icon="mdi:thermometer"),
-            native_value=10,
             native_unit_of_measurement='°C',
             device_class=SensorDeviceClass.TEMPERATURE,
             suggested_display_precision=1,
         ),
-        OptisparkSensor(
+        Optispark_power_sensor(
             coordinator=coordinator,
             entity_description=SensorEntityDescription(
                 key="power_usage",
                 name="Power Usage",
                 icon="mdi:lightning-bolt"),
-            native_value=800,
             native_unit_of_measurement='W',
             device_class=SensorDeviceClass.POWER,
             suggested_display_precision=1,
         ),
-        OptisparkSensor(
+        Optispark_power_sensor(
             coordinator=coordinator,
             entity_description=SensorEntityDescription(
                 key="buggy_power_usage",
                 name="Buggy Power Usage",
                 icon="mdi:lightning-bolt"),
-            native_value=999,
             native_unit_of_measurement='w',  # Lowercase w
             device_class=SensorDeviceClass.POWER,
             suggested_display_precision=1,
@@ -56,7 +53,6 @@ class OptisparkSensor(DebugHeatPumpEntity, SensorEntity):
         self,
         coordinator: DebugHeatPumpCoordinator,
         entity_description: SensorEntityDescription,
-        native_value: float,
         device_class: str = None,
         native_unit_of_measurement: str = None,
         suggested_display_precision: int = None,
@@ -65,7 +61,6 @@ class OptisparkSensor(DebugHeatPumpEntity, SensorEntity):
         """Initialize the sensor class."""
         super().__init__(coordinator)
         self.entity_description = entity_description
-        self._native_value = native_value
         self._device_class = device_class
         self._native_unit_of_measurement = native_unit_of_measurement
         self._suggested_display_precision = suggested_display_precision
@@ -92,14 +87,6 @@ class OptisparkSensor(DebugHeatPumpEntity, SensorEntity):
         return self._native_unit_of_measurement
 
     @property
-    def native_value(self) -> float:
-        """The value of the sensor in the sensor's native_unit_of_measurement.
-
-        Using a device_class may restrict the types that can be returned by this property.
-        """
-        return self._native_value
-
-    @property
     def state_class(self):
         """Type of state.
 
@@ -107,3 +94,27 @@ class OptisparkSensor(DebugHeatPumpEntity, SensorEntity):
         the frontend instead of as discrete values.
         """
         return self._state_class
+
+
+class Optispark_power_sensor(OptisparkSensor):
+    """Power use of heat pump."""
+
+    @property
+    def native_value(self):
+        """The value of the sensor in the sensor's native_unit_of_measurement.
+
+        Using a device_class may restrict the types that can be returned by this property.
+        """
+        return self.coordinator.power
+
+
+class Optispark_external_air_temperature_sensor(OptisparkSensor):
+    """External air temperature."""
+
+    @property
+    def native_value(self):
+        """The value of the sensor in the sensor's native_unit_of_measurement.
+
+        Using a device_class may restrict the types that can be returned by this property.
+        """
+        return self.coordinator.external_air_temperature

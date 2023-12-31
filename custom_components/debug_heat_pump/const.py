@@ -5,7 +5,7 @@ LOGGER: Logger = getLogger(__package__)
 
 NAME = "Debug Heat Pump"
 DOMAIN = "debug_heat_pump"
-VERSION = "0.0.0"
+VERSION = "0.0.3"
 ATTRIBUTION = "Attribution"
 
 MODE = "debug_heat_pump_mode"

@@ -14,7 +14,6 @@ from .coordinator import DebugHeatPumpCoordinator
 from .entity import DebugHeatPumpEntity
 
 import logging
-#logger = logging.getLogger().setLevel(logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 ENTITY_DESCRIPTIONS = (
@@ -178,7 +177,7 @@ class DebugHeatPumpClimate(DebugHeatPumpEntity, ClimateEntity):
     @property
     def current_temperature(self) -> float:
         """House temperature measured by the heat pump."""
-        return 16
+        return self.coordinator.internal_air_temperature
 
     @property
     def is_aux_heat(self) -> int:
