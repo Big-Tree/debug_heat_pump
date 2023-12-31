@@ -14,6 +14,7 @@ from .const import DOMAIN, LOGGER
 
 class DebugHeatPumpCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
+
     def __init__(
         self,
         hass: HomeAssistant,
