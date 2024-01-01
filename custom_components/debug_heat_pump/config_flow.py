@@ -35,6 +35,11 @@ class DebugHeatPumpFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 "options": [const.TEMP_CELSIUS, const.TEMP_FAHRENHEIT],
             },
         })
+        data_schema[vol.Required(const.POWER_UNIT, default=const.POWER_KW)] = selector({
+            "select": {
+                "options": [const.POWER_KW, const.POWER_W],
+            },
+        })
 
         return self.async_show_form(
             step_id="user",

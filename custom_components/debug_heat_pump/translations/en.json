@@ -5,7 +5,8 @@
                 "description": "",
                 "data": {
                     "debug_heat_pump_mode": "What heating/cooling modes does the heat pump support",
-                    "Temperature Unit": "Temperature unit the heat pump uses on the backend"
+                    "temperature_unit": "Temperature unit the heat pump uses on the backend",
+                    "power_unit": "Units for heat pump power"
                 }
             }
         },

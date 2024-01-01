@@ -12,6 +12,12 @@ from .entity import DebugHeatPumpEntity
 async def async_setup_entry(hass, entry, async_add_devices):
     """Set up the sensor platform."""
     coordinator = hass.data[const.DOMAIN][entry.entry_id]
+    match entry.data[const.POWER_UNIT]:
+        case const.POWER_KW:
+            power_precision = 2
+        case const.POWER_W:
+            power_precision = 0
+
     async_add_devices([
         Optispark_external_air_temperature_sensor(
             coordinator=coordinator,
@@ -29,9 +35,9 @@ async def async_setup_entry(hass, entry, async_add_devices):
                 key="power_usage",
                 name="Power Usage",
                 icon="mdi:lightning-bolt"),
-            native_unit_of_measurement='W',
+            native_unit_of_measurement=entry.data[const.POWER_UNIT],
             device_class=SensorDeviceClass.POWER,
-            suggested_display_precision=1,
+            suggested_display_precision=power_precision,
         ),
         Optispark_power_sensor(
             coordinator=coordinator,
@@ -41,7 +47,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
                 icon="mdi:lightning-bolt"),
             native_unit_of_measurement='w',  # Lowercase w
             device_class=SensorDeviceClass.POWER,
-            suggested_display_precision=1,
+            suggested_display_precision=0,
         ),
     ])
 
@@ -105,7 +111,13 @@ class Optispark_power_sensor(OptisparkSensor):
 
         Using a device_class may restrict the types that can be returned by this property.
         """
-        return self.coordinator.power
+        match self._native_unit_of_measurement:
+            case const.POWER_KW:
+                return self.coordinator.power
+            case const.POWER_W:
+                return self.coordinator.power * 1000
+            case 'w':
+                return self.coordinator.power * 1000
 
 
 class Optispark_external_air_temperature_sensor(OptisparkSensor):
