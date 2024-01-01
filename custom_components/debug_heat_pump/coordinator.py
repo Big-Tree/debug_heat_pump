@@ -57,7 +57,7 @@ class DebugHeatPumpCoordinator(DataUpdateCoordinator):
         now = datetime.now()
         begining_of_year = now.replace(month=1, day=1, minute=0, second=0, microsecond=0)
         seconds_since = now.timestamp() - begining_of_year.timestamp()
-        index = int(seconds_since/60/2)
+        index = int(seconds_since/2)
         return index
 
     @property
