@@ -46,7 +46,7 @@ class DebugHeatPumpCoordinator(DataUpdateCoordinator):
         df = df[15249:-22630]  # 2022/01/01 00:00:00 - 2022/08/24 23:58:00
         self._external_air_temperature = df['External_Air_Temperature'].to_numpy()
         self._internal_air_temperature = df['Internal_Air_Temperature'].to_numpy()
-        self._power = df['Power/kW'].to_numpy() * 1000
+        self._power = df['Power/kW'].to_numpy()
 
     async def _async_update_data(self):
         """Update data via library."""
