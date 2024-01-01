@@ -25,7 +25,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
                 key="external_temperature",
                 name="External Temperature",
                 icon="mdi:thermometer"),
-            native_unit_of_measurement='°C',
+            native_unit_of_measurement=entry.data[const.TEMP_UNIT],
             device_class=SensorDeviceClass.TEMPERATURE,
             suggested_display_precision=1,
         ),
