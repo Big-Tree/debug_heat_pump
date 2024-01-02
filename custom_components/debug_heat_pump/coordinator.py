@@ -10,6 +10,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .api import DebugHeatPumpApi
 from .const import DOMAIN, LOGGER
+from . import const
 
 
 class DebugHeatPumpCoordinator(DataUpdateCoordinator):
@@ -35,7 +36,7 @@ class DebugHeatPumpCoordinator(DataUpdateCoordinator):
             'custom_components/debug_heat_pump/data/Property_ID=EOH3204_cropped.csv')
 
         # If we are developing the integration the file path will be different.
-        developing_integration = False
+        developing_integration = True
         if developing_integration:
             csv_file_path = self.hass.config.path().split('/')[:-1]
             csv_file_path.extend(['custom_components', 'debug_heat_pump', 'data', 'Property_ID=EOH3204_cropped.csv'])
@@ -60,6 +61,32 @@ class DebugHeatPumpCoordinator(DataUpdateCoordinator):
         index = int(seconds_since/2)
         return index
 
+    def celcius_conversion(self, x):
+        """Ensure celcius readings are converted to the correct unit.
+
+        Data is stored in °C, so readings need to be converted to °F if set in the config_flow.
+        """
+        unit = self.config_entry.data[const.TEMP_UNIT]
+        if unit == const.TEMP_CELSIUS:
+            return x
+        elif unit == const.TEMP_FAHRENHEIT:
+            # Convert our Celcius readings to Farenheit
+            return x*9/5 + 32
+
+    def power_conversion(self, x):
+        """Ensure power readings are converted to the correct unit.
+
+        Data is stored in kW, so readings need to be converted to W if set in the config_flow.
+        """
+        unit = self.config_entry.data[const.POWER_UNIT]
+        if unit == const.POWER_KW:
+            return x
+        elif unit == const.POWER_W:
+            return x * 1000
+        elif unit == 'w':
+            return x * 1000
+
+
     @property
     def available(self) -> bool:
         """Return True if entity is available."""
@@ -68,14 +95,17 @@ class DebugHeatPumpCoordinator(DataUpdateCoordinator):
     @property
     def external_air_temperature(self):
         """Current external air temperature."""
-        return self._external_air_temperature.take(self.index(), mode='wrap')
+        celcius_reading = self._external_air_temperature.take(self.index(), mode='wrap')
+        return self.celcius_conversion(celcius_reading)
 
     @property
     def internal_air_temperature(self):
         """Current internal air temperature."""
-        return self._internal_air_temperature.take(self.index(), mode='wrap')
+        celcius_reading = self._internal_air_temperature.take(self.index(), mode='wrap')
+        return self.celcius_conversion(celcius_reading)
 
     @property
     def power(self):
         """Current heat pump power usage."""
-        return self._power.take(self.index(), mode='wrap')
+        kw_reading = self._power.take(self.index(), mode='wrap')
+        return self.power_conversion(kw_reading)

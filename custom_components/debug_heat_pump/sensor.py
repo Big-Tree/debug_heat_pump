@@ -17,6 +17,10 @@ async def async_setup_entry(hass, entry, async_add_devices):
             power_precision = 2
         case const.POWER_W:
             power_precision = 0
+    if entry.data[const.POWER_UNIT] == const.POWER_KW:
+        buggy_unit = 'kw'
+    elif entry.data[const.POWER_UNIT] == const.POWER_W:
+        buggy_unit = 'w'
 
     async_add_devices([
         Optispark_external_air_temperature_sensor(
@@ -45,9 +49,9 @@ async def async_setup_entry(hass, entry, async_add_devices):
                 key="buggy_power_usage",
                 name="Buggy Power Usage",
                 icon="mdi:lightning-bolt"),
-            native_unit_of_measurement='w',  # Lowercase w
+            native_unit_of_measurement=buggy_unit,  # Lowercase
             device_class=SensorDeviceClass.POWER,
-            suggested_display_precision=0,
+            suggested_display_precision=power_precision,
         ),
     ])
 
@@ -111,13 +115,7 @@ class Optispark_power_sensor(OptisparkSensor):
 
         Using a device_class may restrict the types that can be returned by this property.
         """
-        match self._native_unit_of_measurement:
-            case const.POWER_KW:
-                return self.coordinator.power
-            case const.POWER_W:
-                return self.coordinator.power * 1000
-            case 'w':
-                return self.coordinator.power * 1000
+        return self.coordinator.power
 
 
 class Optispark_external_air_temperature_sensor(OptisparkSensor):

@@ -48,9 +48,9 @@ class DebugHeatPumpClimate(DebugHeatPumpEntity, ClimateEntity):
         """Initialize the sensor class."""
         super().__init__(coordinator)
         self.entity_description = entity_description
-        self._target_temperature = 20
-        self._target_temperature_high = 25
-        self._target_temperature_low = 20
+        self._target_temperature = self.coordinator.celcius_conversion(20)
+        self._target_temperature_high = self.coordinator.celcius_conversion(25)
+        self._target_temperature_low = self.coordinator.celcius_conversion(20)
         match self.coordinator.config_entry.data[const.MODE]:
             case const.MODE_HEAT:
                 self._hvac_mode = HVACMode.HEAT
@@ -183,8 +183,3 @@ class DebugHeatPumpClimate(DebugHeatPumpEntity, ClimateEntity):
     def is_aux_heat(self) -> int:
         """I think this returns whether the heat pump is currently using resistive heating."""
         return None
-
-    #@property
-    #def unique_id(self):
-    #    """Return a unique ID."""
-    #    return 'debug_heat_pump_id'
