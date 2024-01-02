@@ -56,9 +56,9 @@ class DebugHeatPumpCoordinator(DataUpdateCoordinator):
     def index(self):
         """Each index represents a two minute period."""
         now = datetime.now()
-        begining_of_year = now.replace(month=1, day=1, minute=0, second=0, microsecond=0)
+        begining_of_year = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
         seconds_since = now.timestamp() - begining_of_year.timestamp()
-        index = int(seconds_since/2)
+        index = int(seconds_since/60/2)
         return index
 
     def celcius_conversion(self, x):
