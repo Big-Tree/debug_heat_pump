@@ -36,7 +36,7 @@ class DebugHeatPumpCoordinator(DataUpdateCoordinator):
             'custom_components/debug_heat_pump/data/Property_ID=EOH3204_cropped.csv')
 
         # If we are developing the integration the file path will be different.
-        developing_integration = True
+        developing_integration = False
         if developing_integration:
             csv_file_path = self.hass.config.path().split('/')[:-1]
             csv_file_path.extend(['custom_components', 'debug_heat_pump', 'data', 'Property_ID=EOH3204_cropped.csv'])
